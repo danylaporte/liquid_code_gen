@@ -1,6 +1,9 @@
-[![Build Status](https://travis-ci.org/danylaporte/typed_fixedbitset.svg?branch=master)](https://travis-ci.org/danylaporte/typed_fixedbitset)
+[![Build Status](https://travis-ci.org/danylaporte/liquid_code_gen.svg?branch=master)](https://travis-ci.org/danylaporte/liquid_code_gen)
 
 Proc macro that generate rust code from a liquid template.
+
+## Requirements
+Nightly Rust.
 
 ## Example
 

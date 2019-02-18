@@ -1,0 +1,15 @@
+[package]
+name = "liquid_code_gen"
+edition = "2018"
+version = "0.1.0"
+authors = ["Dany Laporte <dany_laporte@hotmail.com>"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+Inflector = "0.11"
+liquid = "0.18"
+proc-macro2 = "0.4"
+quote = "0.6"
+syn = { version = "0.15", features = [ "full" ] }

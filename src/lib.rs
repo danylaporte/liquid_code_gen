@@ -1,11 +1,11 @@
-//! A 
-//! 
+//! A
+//!
 //! # Example
 //! ```
 //! #![feature(proc_macro_hygiene)]
 //!
 //! use liquid_code_gen::liquid;
-//! 
+//!
 //! fn main() {
 //!     liquid!(r#"
 //!         {% for i in (1..5) %}
@@ -18,10 +18,11 @@
 extern crate proc_macro;
 
 use inflector::Inflector;
-use liquid::filters::invalid_argument_count;
-use liquid::compiler::FnFilterValue;
-use liquid::value::error::Error;
+use liquid::compiler::Filter;
+use liquid::error::Result;
+use liquid::interpreter::Context;
 use liquid::value::Value;
+use liquid_derive::*;
 use proc_macro::TokenStream;
 
 #[proc_macro]
@@ -32,7 +33,7 @@ pub fn liquid(input: TokenStream) -> TokenStream {
         .replace("\\#", "#");
 
     let parser = liquid::ParserBuilder::with_liquid()
-        .filter("snake", snake as FnFilterValue)
+        .filter(Snake)
         .build()
         .unwrap()
         .parse(&s)
@@ -44,27 +45,21 @@ pub fn liquid(input: TokenStream) -> TokenStream {
     out.parse().unwrap()
 }
 
-fn snake(input: &Value, args: &[Value]) -> Result<Value, Error> {
-    check_args_len(args, 0, 0)?;
+#[derive(Clone, ParseFilter, FilterReflection)]
+#[filter(
+    name = "snake",
+    description = "Transform a string into snake case",
+    parsed(SnakeFilter)
+)]
+struct Snake;
 
-    let s = input.to_str();
-    Ok(Value::scalar(s.to_snake_case()))
-}
+#[derive(Debug, Default, Display_filter)]
+#[name = "snake"]
+struct SnakeFilter;
 
-fn check_args_len(args: &[Value], required: usize, optional: usize) -> Result<(), Error> {
-    if args.len() < required {
-        return Err(invalid_argument_count(format!(
-            "expected at least {}, {} given",
-            required,
-            args.len()
-        )));
+impl Filter for SnakeFilter {
+    fn evaluate(&self, input: &Value, _context: &Context) -> Result<Value> {
+        let s = input.to_str();
+        Ok(Value::scalar(s.to_snake_case()))
     }
-    if required + optional < args.len() {
-        return Err(invalid_argument_count(format!(
-            "expected at most {}, {} given",
-            required + optional,
-            args.len()
-        )));
-    }
-    Ok(())
 }

@@ -1,0 +1,13 @@
+[package]
+name = "liquidlib"
+edition = "2018"
+version = "0.2.0"
+authors = ["Dany Laporte <dany_laporte@hotmail.com>"]
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+Inflector = "0.11"
+liquid = "0.19"
+liquid-derive = "0.19"
